@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333"
+    tools:context=".Singleplayer">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="50sp"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Player 1:"
+            android:textSize="24sp"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/computer_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Computer:"
+            android:textSize="24sp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <Button
+            android:id="@+id/grid1"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+        <Button
+            android:id="@+id/grid2"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+        <Button
+            android:id="@+id/grid3"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <Button
+            android:id="@+id/grid4"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+        <Button
+            android:id="@+id/grid5"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+        <Button
+            android:id="@+id/grid6"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <Button
+            android:id="@+id/grid7"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+        <Button
+            android:id="@+id/grid8"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+        <Button
+            android:id="@+id/grid9"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:textSize="40sp"
+            android:text=""/>
+    </TableRow>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="50sp"
+        android:gravity="center">
+        <Button
+            android:layout_width="240sp"
+            android:layout_height="80sp"
+            android:text="Reset"/>
+    </LinearLayout>
+
+
+</TableLayout>
