@@ -71,63 +71,54 @@ public class Multiplayer extends AppCompatActivity {
         grid1.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid2 = findViewById(R.id.grid2);
         grid2.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid3 = findViewById(R.id.grid3);
         grid3.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid4 = findViewById(R.id.grid4);
         grid4.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid5 = findViewById(R.id.grid5);
         grid5.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid6 = findViewById(R.id.grid6);
         grid6.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid7 = findViewById(R.id.grid7);
         grid7.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid8 = findViewById(R.id.grid8);
         grid8.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
         grid9 = findViewById(R.id.grid9);
         grid9.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
-                v.vibrate(500);
             }
         });
 
@@ -192,7 +183,11 @@ public class Multiplayer extends AppCompatActivity {
 
                 if(checkWin(view) == true) {
                     bg_mp.stop();
-                    effects_mp.start();
+                    effects_mp.stop();
+                    bg_mp.reset();
+                    bg_mp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
+                    bg_mp.start();
+                    v.vibrate(500);
                     if(board.charAt(0) == playerLetter) {
                         turnText.setText("You Win!");
                     } else {
