@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="50sp"
-            android:text="Your Turn/Opponent's Turn"
+            android:text="Tic Tac Toe"
             android:textAlignment="viewStart"
             android:textColor="@color/white"
             android:textSize="24sp" />

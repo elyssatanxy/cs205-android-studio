@@ -15,12 +15,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Multiplayer extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
     private String board; // The game board String
     private EditText codeField;
+    private Button createButton;
+    private Button joinButton;
     private String code;
     private char playerLetter; // 'X' or 'O'
     private TextView turnText;
@@ -46,6 +51,8 @@ public class Multiplayer extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         codeField = findViewById(R.id.codeField);
+        createButton = findViewById(R.id.createButton);
+        joinButton = findViewById(R.id.joinButton);
 
         turnText = findViewById(R.id.turnText);
 
@@ -72,6 +79,10 @@ public class Multiplayer extends AppCompatActivity {
     }
 
     public void createGame(View view) {
+        codeField.setEnabled(false);
+        createButton.setEnabled(false);
+        joinButton.setEnabled(false);
+
         board = zeroBoard;
         code = codeField.getText().toString();
         mDatabase.child(code).setValue(zeroBoard);
@@ -90,6 +101,11 @@ public class Multiplayer extends AppCompatActivity {
 
     public void joinGame(View view) {
         code = codeField.getText().toString();
+
+        codeField.setEnabled(false);
+        createButton.setEnabled(false);
+        joinButton.setEnabled(false);
+
         playerLetter = 'O';
         createListener(view);
     }
@@ -105,7 +121,17 @@ public class Multiplayer extends AppCompatActivity {
                     enableGrid(view);
                     turnText.setText("Your Turn");
                 } else {
+                    disableGrid(view);
                     turnText.setText("Opponent's Turn");
+                }
+
+                if(checkWin(view) == true) {
+                    if(board.charAt(0) == playerLetter) {
+                        turnText.setText("You Win!");
+                    } else {
+                        turnText.setText("Opponent Wins!");
+                    }
+                    disableGrid(view);
                 }
             }
 
@@ -171,10 +197,18 @@ public class Multiplayer extends AppCompatActivity {
         tempBoard.setCharAt(0, playerLetter);
         board = String.valueOf(tempBoard);
 
+        if(checkWin(view) == true) {
+            StringBuilder tBoard = new StringBuilder(board);
+            tBoard.setCharAt(0, playerLetter);
+            board = String.valueOf(tBoard);
+            mDatabase.child(code).setValue(board);
+        }
+
         mDatabase.child(code).setValue(board);
         updateBoard(view);
-        disableGrid(view);
         turnText.setText("Opponent's Turn");
+
+        disableGrid(view);
     }
 
     // Enables the playable buttons
@@ -201,6 +235,40 @@ public class Multiplayer extends AppCompatActivity {
         } else {
             disableGrid(view);
         }
+    }
+
+    public boolean checkWin(View view) {
+         String[] winningSequences = {
+                 "XXX......",
+                 "...XXX...",
+                 "......XXX",
+                 "X..X..X..",
+                 ".X..X..X.",
+                 "..X..X..X",
+                 "X...X...X",
+                 "..X.X.X..",
+                 "OOO......",
+                 "...OOO...",
+                 "......OOO",
+                 "O..O..O..",
+                 ".O..O..O.",
+                 "..O..O..O",
+                 "O...O...O",
+                 "..O.O.O.."
+         };
+
+         String tempBoard = board.substring(1);
+
+         for(int i = 0; i < winningSequences.length; i++) {
+             if(tempBoard.matches(winningSequences[i])) {
+//                 StringBuilder tBoard = new StringBuilder(board);
+//                 tBoard.setCharAt(0, playerLetter);
+//                 board = String.valueOf(tBoard);
+//                 mDatabase.child(code).setValue(board);
+                 return true;
+             }
+         }
+         return false;
     }
 
 }
