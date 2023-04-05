@@ -4,6 +4,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,11 +25,14 @@ public class Singleplayer extends AppCompatActivity {
     Button grid9;
     TextView text;
     private ReentrantLock lock = new ReentrantLock();
+    volatile ArrayList<Integer> availableGrids = new ArrayList<>();
+    volatile int[] grids = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplayer);
+
         grid1 = findViewById(R.id.grid1);
         grid2 = findViewById(R.id.grid2);
         grid3 = findViewById(R.id.grid3);
@@ -35,24 +44,53 @@ public class Singleplayer extends AppCompatActivity {
         grid9 = findViewById(R.id.grid9);
         text = findViewById(R.id.computer_value);
 
-        Runnable ComputerThread = new Runnable() {
+        for (int i = 1; i <= 9; i++) {
+            availableGrids.add(i);
+        }
+
+        Runnable computerThread = new Runnable() {
             @Override
             public void run() {
-                Random random = new Random();
-                int nextPosition = random.nextInt(9) + 1;
-
-                for (int i = 1; i <= 9; i++) {
-                    Button grid = getGrid(i);
-                    if (i == nextPosition) {
+                lock.lock();
+                try {
+                    if (!availableGrids.isEmpty()) {
+                        Random random = new Random();
+                        int nextIndex = random.nextInt(availableGrids.size());
+                        int nextPosition = availableGrids.get(nextIndex);
+                        text.setText("" + nextPosition);
+//
+                        Button grid = getGrid(nextPosition);
                         grid.setText("X");
+                        grids[nextPosition - 1] = 1;
+
+                        // REMOVE THE GRID FROM THE LIST OF AVAILABLE GRIDS
+                        Iterator<Integer> iterator = availableGrids.iterator();
+                        while (iterator.hasNext()) {
+                            int value = iterator.next();
+                            if (value == nextPosition) {
+                                iterator.remove();
+                            }
+                        }
                     }
+                } finally {
+                    lock.unlock();
                 }
-                text.setText("" + nextPosition);
+
                 grid9.postDelayed(this, 1000);
             }
         };
 
-        grid9.postDelayed(ComputerThread, 1000);
+
+        Runnable userThread = new Runnable() {
+            @Override
+            public void run() {
+                lock.lock();
+            }
+        };
+
+        //grid9.postDelayed(computerThread, 1000);
+        Thread ComputerThread = new Thread(computerThread);
+        ComputerThread.start();
     }
 
     public Button getGrid(int position) {
@@ -77,6 +115,16 @@ public class Singleplayer extends AppCompatActivity {
                 return grid9;
             default:
                 throw new IllegalArgumentException("Invalid grid position: " + position);
+        }
+    }
+}
+
+class Buffer {
+    static volatile ArrayList<Integer> available;
+
+    Buffer() {
+        for (int i = 0; i < this.available.size(); i++) {
+            this.available.add(0);
         }
     }
 }
