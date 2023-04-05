@@ -3,8 +3,10 @@ package com.example.cs205;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,12 +49,14 @@ public class Multiplayer extends AppCompatActivity {
     MediaPlayer bg_mp;
 
     MediaPlayer effects_mp;
+    Vibrator v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer);
         bg_mp = MediaPlayer.create(this, R.raw.game_music);
         effects_mp = MediaPlayer.create(this, R.raw.button_press);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         bg_mp.setLooping(true);
         bg_mp.start();
 
@@ -67,54 +71,63 @@ public class Multiplayer extends AppCompatActivity {
         grid1.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid2 = findViewById(R.id.grid2);
         grid2.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid3 = findViewById(R.id.grid3);
         grid3.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid4 = findViewById(R.id.grid4);
         grid4.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid5 = findViewById(R.id.grid5);
         grid5.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid6 = findViewById(R.id.grid6);
         grid6.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid7 = findViewById(R.id.grid7);
         grid7.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid8 = findViewById(R.id.grid8);
         grid8.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
         grid9 = findViewById(R.id.grid9);
         grid9.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View view){
                 effects_mp.start();
+                v.vibrate(500);
             }
         });
 
