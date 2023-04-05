@@ -3,6 +3,7 @@ package com.example.cs205;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -43,11 +44,17 @@ public class Multiplayer extends AppCompatActivity {
     Button grid9;
 
     Button[] gridArray;
+    MediaPlayer bg_mp;
 
+    MediaPlayer effects_mp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer);
+        bg_mp = MediaPlayer.create(this, R.raw.game_music);
+        effects_mp = MediaPlayer.create(this, R.raw.button_press);
+        bg_mp.setLooping(true);
+        bg_mp.start();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         codeField = findViewById(R.id.codeField);
@@ -57,14 +64,59 @@ public class Multiplayer extends AppCompatActivity {
         turnText = findViewById(R.id.turnText);
 
         grid1 = findViewById(R.id.grid1);
+        grid1.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid2 = findViewById(R.id.grid2);
+        grid2.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid3 = findViewById(R.id.grid3);
+        grid3.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid4 = findViewById(R.id.grid4);
+        grid4.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid5 = findViewById(R.id.grid5);
+        grid5.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid6 = findViewById(R.id.grid6);
+        grid6.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid7 = findViewById(R.id.grid7);
+        grid7.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid8 = findViewById(R.id.grid8);
+        grid8.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
         grid9 = findViewById(R.id.grid9);
+        grid9.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view){
+                effects_mp.start();
+            }
+        });
 
         gridArray = new Button[9];
         gridArray[0] = grid1;
@@ -126,6 +178,8 @@ public class Multiplayer extends AppCompatActivity {
                 }
 
                 if(checkWin(view) == true) {
+                    bg_mp.stop();
+                    effects_mp.start();
                     if(board.charAt(0) == playerLetter) {
                         turnText.setText("You Win!");
                     } else {
