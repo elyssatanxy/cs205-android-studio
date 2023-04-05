@@ -37,19 +37,22 @@
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
         <Button
             android:id="@+id/grid2"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
         <Button
             android:id="@+id/grid3"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
     </TableRow>
 
     <TableRow
@@ -61,19 +64,22 @@
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
         <Button
             android:id="@+id/grid5"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
         <Button
             android:id="@+id/grid6"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
     </TableRow>
 
     <TableRow
@@ -85,19 +91,22 @@
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
         <Button
             android:id="@+id/grid8"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
         <Button
             android:id="@+id/grid9"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:textSize="40sp"
-            android:text=""/>
+            android:text=""
+            android:onClick="move"/>
     </TableRow>
 
     <LinearLayout
