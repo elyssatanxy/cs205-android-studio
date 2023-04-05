@@ -96,7 +96,7 @@ public class Singleplayer extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    userTurnDone.signal();
+                    computerTurnDone.signal();
                     lock.unlock();
                 }
             }
@@ -152,7 +152,7 @@ public class Singleplayer extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    computerTurnDone.signal();
+                    userTurnDone.signal();
                     lock.unlock();
                 }
             }
