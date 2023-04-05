@@ -68,59 +68,14 @@ public class Multiplayer extends AppCompatActivity {
         turnText = findViewById(R.id.turnText);
 
         grid1 = findViewById(R.id.grid1);
-        grid1.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid2 = findViewById(R.id.grid2);
-        grid2.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid3 = findViewById(R.id.grid3);
-        grid3.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid4 = findViewById(R.id.grid4);
-        grid4.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid5 = findViewById(R.id.grid5);
-        grid5.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid6 = findViewById(R.id.grid6);
-        grid6.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid7 = findViewById(R.id.grid7);
-        grid7.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid8 = findViewById(R.id.grid8);
-        grid8.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
         grid9 = findViewById(R.id.grid9);
-        grid9.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view){
-                effects_mp.start();
-            }
-        });
 
         gridArray = new Button[9];
         gridArray[0] = grid1;
@@ -217,6 +172,7 @@ public class Multiplayer extends AppCompatActivity {
 
     public void move (View view) {
         StringBuilder tempBoard = new StringBuilder(board);
+        effects_mp.start();
         switch (view.getId()) {
             case R.id.grid1:
                 tempBoard.setCharAt(1, playerLetter);
