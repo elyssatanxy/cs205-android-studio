@@ -18,8 +18,12 @@ import com.google.firebase.database.ValueEventListener;
 public class Multiplayer extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
+
+    private String board; // The game board String
+    private EditText codeField;
+    private String code;
+
     private TextView textTest1;
-    private EditText editText1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,31 +31,58 @@ public class Multiplayer extends AppCompatActivity {
         setContentView(R.layout.activity_multiplayer);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        textTest1 = findViewById(R.id.textTest1);
-        editText1 = findViewById(R.id.editText1);
+        codeField = findViewById(R.id.codeField);
 
+        textTest1 = findViewById(R.id.textTest1);
+
+
+//        ValueEventListener postListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                String obj = snapshot.child("ttt").getValue().toString();
+//                textTest1.setText(obj);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                textTest1.setText("rip");
+//            }
+//        };
+//
+//        mDatabase.addValueEventListener(postListener);
+
+    }
+
+    public void createGame(View view) {
+//        mDatabase.child("ttt").setValue(codeField.getText().toString());
+        String zeroBoard = "000000000";
+        code = codeField.getText().toString();
+        mDatabase.child(code).setValue(zeroBoard);
+
+//        createListener(view);
+    }
+
+    public void joinGame(View view) {
+        code = codeField.getText().toString();
+        createListener(view);
+    }
+
+    public void createListener(View view) {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String obj = snapshot.child("ttt").getValue().toString();
+                String obj = snapshot.child(code).getValue().toString();
                 textTest1.setText(obj);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                textTest1.setText("rip");
+//                textTest1.setText("rip");
+                ;
             }
         };
 
         mDatabase.addValueEventListener(postListener);
-
     }
 
-    public void writeToDatabase(View view) {
-        mDatabase.child("ttt").setValue(editText1.getText().toString());
-    }
-
-    public void readFromDatabase(View view) {
-
-    }
 }
