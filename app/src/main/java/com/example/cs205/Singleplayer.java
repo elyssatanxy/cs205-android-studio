@@ -6,11 +6,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -51,7 +48,7 @@ public class Singleplayer extends AppCompatActivity {
         grid7 = findViewById(R.id.grid7);
         grid8 = findViewById(R.id.grid8);
         grid9 = findViewById(R.id.grid9);
-        text = findViewById(R.id.computer_value);
+        text = findViewById(R.id.turnText);
 
         for (int i = 1; i <= 9; i++) {
             availableGrids.add(i);

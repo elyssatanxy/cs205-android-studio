@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,17 +24,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:hint="ENTER CODE"
                 android:inputType="textPersonName"
-                android:text="ENTER CODE"
-                android:textColor="#8F8F8F"
+                android:paddingStart="10dp"
+                android:textColor="#F8F8F8"
+                android:textColorHint="#8F8F8F"
                 android:textSize="14sp" />
 
             <Button
                 android:id="@+id/createButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:onClick="createGame"
                 android:paddingHorizontal="10dp"
@@ -51,33 +52,21 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/turnText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="50sp"
+            android:text="Your Turn/Opponent's Turn"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="#333333"
             tools:context=".Singleplayer">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginVertical="50dp"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/computer_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Computer:"
-                    android:textColor="@color/white"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Player 1:"
-                    android:textColor="@color/white"
-                    android:textSize="24sp" />
-            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -88,6 +77,7 @@
                     android:id="@+id/grid1"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
 
@@ -95,6 +85,7 @@
                     android:id="@+id/grid2"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
 
@@ -102,6 +93,7 @@
                     android:id="@+id/grid3"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
             </TableRow>
@@ -115,6 +107,7 @@
                     android:id="@+id/grid4"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
 
@@ -122,6 +115,7 @@
                     android:id="@+id/grid5"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
 
@@ -129,6 +123,7 @@
                     android:id="@+id/grid6"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
             </TableRow>
@@ -142,6 +137,7 @@
                     android:id="@+id/grid7"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
 
@@ -149,6 +145,7 @@
                     android:id="@+id/grid8"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
 
@@ -156,33 +153,27 @@
                     android:id="@+id/grid9"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
+                    android:onClick="move"
                     android:text=""
                     android:textSize="40sp" />
             </TableRow>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="50sp"
-                android:gravity="center">
-
-                <Button
-                    android:layout_width="240sp"
-                    android:layout_height="80sp"
-                    android:text="Reset" />
-
-                <TextView
-                    android:id="@+id/textTest1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textColor="#FFFFFF" />
-
-            </LinearLayout>
-
 
         </TableLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50sp"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="240sp"
+                android:layout_height="80sp"
+                android:onClick="reset"
+                android:text="Reset" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
