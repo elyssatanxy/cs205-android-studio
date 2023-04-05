@@ -17,4 +17,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Singleplayer.class);
         startActivity(intent);
     }
+
+    public void startMultiplayer(View view) {
+        Intent intent = new Intent(MainActivity.this, Multiplayer.class);
+        startActivity(intent);
+    }
 }

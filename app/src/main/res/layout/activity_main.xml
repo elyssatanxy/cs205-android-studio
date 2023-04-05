@@ -13,4 +13,12 @@
         android:text="Singleplayer Mode"
         android:onClick="startSingleplayer"/>
 
+    <Button
+        android:id="@+id/multiplayerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="startMultiplayer"
+        android:text="Multiplayer" />
+
 </LinearLayout>
