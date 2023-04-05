@@ -1,6 +1,7 @@
 package com.example.cs205;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Singleplayer extends AppCompatActivity {
@@ -22,8 +25,14 @@ public class Singleplayer extends AppCompatActivity {
     Button grid9;
     TextView text;
     private ReentrantLock lock = new ReentrantLock();
+    Condition computerTurnDone = lock.newCondition();
+    Condition userTurnDone = lock.newCondition();
+    volatile int index = 1;
     volatile ArrayList<Integer> availableGrids = new ArrayList<>();
     volatile int[] grids = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    AtomicInteger val = new AtomicInteger(10);
+    volatile boolean gameOver = false;
+    private final Object availableGridsLock = new Object();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,44 +59,110 @@ public class Singleplayer extends AppCompatActivity {
             public void run() {
                 lock.lock();
                 try {
-                    if (!availableGrids.isEmpty()) {
-                        Random random = new Random();
-                        int nextIndex = random.nextInt(availableGrids.size());
-                        int nextPosition = availableGrids.get(nextIndex);
-                        text.setText("" + nextPosition);
-//
-                        Button grid = getGrid(nextPosition);
-                        grid.setText("X");
-                        grids[nextPosition - 1] = 1;
+                    text.setText("HI");
+                    if (index % 2 == 0) {
+                        userTurnDone.await();
+                    }
 
-                        // REMOVE THE GRID FROM THE LIST OF AVAILABLE GRIDS
-                        Iterator<Integer> iterator = availableGrids.iterator();
-                        while (iterator.hasNext()) {
-                            int value = iterator.next();
-                            if (value == nextPosition) {
-                                iterator.remove();
-                            }
+                    synchronized (availableGrids) {
+                        if (!availableGrids.isEmpty()) {
+                            Random random = new Random();
+                            int nextIndex = random.nextInt(availableGrids.size());
+                            int nextPosition = availableGrids.get(nextIndex);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Button grid = getGrid(nextPosition);
+                                    grid.setText("X");
+
+                                    grids[nextPosition - 1] = 1;
+
+                                    synchronized (availableGrids) {
+                                        Iterator<Integer> iterator = availableGrids.iterator();
+                                        while (iterator.hasNext()) {
+                                            int value = iterator.next();
+                                            if (value == nextPosition) {
+                                                iterator.remove();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            index++;
                         }
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 } finally {
+                    computerTurnDone.signal();
                     lock.unlock();
                 }
-
-                grid9.postDelayed(this, 1000);
             }
         };
-
 
         Runnable userThread = new Runnable() {
             @Override
             public void run() {
                 lock.lock();
+                try {
+                    if (index % 2 == 1) {
+                        computerTurnDone.await();
+                    }
+
+                    while (val.get() == 10) {
+                        continue;
+                    }
+
+                    synchronized (availableGrids) {
+                        if (!availableGrids.isEmpty()) {
+                            index++;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (val.get() == 10) {
+                                        return;
+                                    }
+
+                                    if (availableGrids.contains(val.get())) {
+                                        Button grid = getGrid(val.get());
+                                        grid.setText("O");
+
+                                        grids[val.get() - 1] = 2;
+
+                                        Iterator<Integer> iterator = availableGrids.iterator();
+                                        while (iterator.hasNext()) {
+                                            int value = iterator.next();
+                                            if (value == val.get() - 1) {
+                                                iterator.remove();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    val.set(10);
+
+                                    text.setText("User" + index);
+                                }
+                            });
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    userTurnDone.signal();
+                    lock.unlock();
+                }
             }
         };
 
-        //grid9.postDelayed(computerThread, 1000);
+
         Thread ComputerThread = new Thread(computerThread);
+        Thread UserThread = new Thread(userThread);
         ComputerThread.start();
+        UserThread.start();
     }
 
     public Button getGrid(int position) {
@@ -114,14 +189,36 @@ public class Singleplayer extends AppCompatActivity {
                 throw new IllegalArgumentException("Invalid grid position: " + position);
         }
     }
-}
 
-class Buffer {
-    static volatile ArrayList<Integer> available;
-
-    Buffer() {
-        for (int i = 0; i < this.available.size(); i++) {
-            this.available.add(0);
+    public void move(View v) {
+        switch (v.getId()) {
+            case R.id.grid1:
+                val.set(1);
+                break;
+            case R.id.grid2:
+                val.set(2);
+                break;
+            case R.id.grid3:
+                val.set(3);
+                break;
+            case R.id.grid4:
+                val.set(4);
+                break;
+            case R.id.grid5:
+                val.set(5);
+                break;
+            case R.id.grid6:
+                val.set(6);
+                break;
+            case R.id.grid7:
+                val.set(7);
+                break;
+            case R.id.grid8:
+                val.set(8);
+                break;
+            case R.id.grid9:
+                val.set(9);
+                break;
         }
     }
 }
