@@ -1,6 +1,7 @@
 package com.example.cs205;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -59,12 +60,12 @@ public class Singleplayer extends AppCompatActivity {
             public void run() {
                 lock.lock();
                 try {
-                    text.setText("HI");
                     if (index % 2 == 0) {
                         userTurnDone.await();
                     }
 
-                    synchronized (availableGrids) {
+                    synchronized (availableGridsLock) {
+                        Log.i("COMPUTER THREAD", "ARRAY CURR" + availableGrids);
                         if (!availableGrids.isEmpty()) {
                             Random random = new Random();
                             int nextIndex = random.nextInt(availableGrids.size());
@@ -72,23 +73,25 @@ public class Singleplayer extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    text.setText("Your Turn");
                                     Button grid = getGrid(nextPosition);
                                     grid.setText("X");
-
                                     grids[nextPosition - 1] = 1;
+                                }
 
-                                    synchronized (availableGrids) {
-                                        Iterator<Integer> iterator = availableGrids.iterator();
-                                        while (iterator.hasNext()) {
-                                            int value = iterator.next();
-                                            if (value == nextPosition) {
-                                                iterator.remove();
-                                                break;
-                                            }
-                                        }
+                            });
+
+                            synchronized (availableGridsLock) {
+                                Iterator<Integer> iterator = availableGrids.iterator();
+                                while (iterator.hasNext()) {
+                                    int value = iterator.next();
+                                    if (value == nextPosition) {
+                                        iterator.remove();
+                                        break;
                                     }
                                 }
-                            });
+                            }
+
 
                             index++;
                         }
@@ -115,38 +118,37 @@ public class Singleplayer extends AppCompatActivity {
                         continue;
                     }
 
-                    synchronized (availableGrids) {
+                    synchronized (availableGridsLock) {
+                        Log.i("USER", "this" + availableGrids);
                         if (!availableGrids.isEmpty()) {
                             index++;
 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
+                                    text.setText("Computer's Turn");
                                     if (val.get() == 10) {
                                         return;
                                     }
+                                    Button grid = getGrid(val.get());
+                                    grid.setText("O");
 
-                                    if (availableGrids.contains(val.get())) {
-                                        Button grid = getGrid(val.get());
-                                        grid.setText("O");
 
-                                        grids[val.get() - 1] = 2;
-
-                                        Iterator<Integer> iterator = availableGrids.iterator();
-                                        while (iterator.hasNext()) {
-                                            int value = iterator.next();
-                                            if (value == val.get() - 1) {
-                                                iterator.remove();
-                                                break;
-                                            }
-                                        }
-                                    }
+                                    grids[val.get() - 1] = 2;
                                     val.set(10);
-
-                                    text.setText("User" + index);
                                 }
                             });
+
+                            synchronized (availableGridsLock) {
+                                Iterator<Integer> iterator = availableGrids.iterator();
+                                while (iterator.hasNext()) {
+                                    int value = iterator.next();
+                                    if (value == val.get()) {
+                                        iterator.remove();
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch (InterruptedException e) {
@@ -158,11 +160,35 @@ public class Singleplayer extends AppCompatActivity {
             }
         };
 
+        Runnable schedulerThread = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 9; i++) {
+                    if (i % 2 == 0) {
+                        Thread ComputerThread = new Thread(computerThread);
+                        ComputerThread.start();
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Thread UserThread = new Thread(userThread);
+                        UserThread.start();
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-        Thread ComputerThread = new Thread(computerThread);
-        Thread UserThread = new Thread(userThread);
-        ComputerThread.start();
-        UserThread.start();
+                }
+            }
+
+        };
+
+        Thread SchedulerThread = new Thread(schedulerThread);
+        SchedulerThread.start();
     }
 
     public Button getGrid(int position) {
