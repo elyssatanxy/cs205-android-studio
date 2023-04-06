@@ -168,10 +168,18 @@
             android:gravity="center">
 
             <Button
-                android:layout_width="240sp"
+                android:layout_width="120sp"
                 android:layout_height="80sp"
                 android:onClick="reset"
                 android:text="Reset" />
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="120sp"
+                android:layout_height="80sp"
+                android:layout_weight="1"
+                android:onClick="back"
+                android:text="Exit" />
 
         </LinearLayout>
 

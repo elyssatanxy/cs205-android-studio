@@ -11,12 +11,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Random;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +36,7 @@ public class Multiplayer extends AppCompatActivity {
     private char playerLetter; // 'X' or 'O'
     private TextView turnText;
 
-    private String zeroBoard = "O000000000";
+    private String zeroBoard = "000000000";
 
     Button grid1;
     Button grid2;
@@ -87,16 +90,29 @@ public class Multiplayer extends AppCompatActivity {
         gridArray[6] = grid7;
         gridArray[7] = grid8;
         gridArray[8] = grid9;
+
+        disableGrid(findViewById(android.R.id.content).getRootView());
     }
 
     public void createGame(View view) {
+        if(codeField.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Code cannot be empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         codeField.setEnabled(false);
         createButton.setEnabled(false);
         joinButton.setEnabled(false);
 
-        board = zeroBoard;
+        Random random = new Random();
+        int x = random.nextInt(3);
+        String startingPlayer = "O";
+        if(x == 1) {
+            startingPlayer = "X";
+        }
+        board = startingPlayer.concat(zeroBoard);
         code = codeField.getText().toString();
-        mDatabase.child(code).setValue(zeroBoard);
+        mDatabase.child(code).setValue(board);
 
         playerLetter = 'X';
         createListener(view);
@@ -111,6 +127,11 @@ public class Multiplayer extends AppCompatActivity {
     }
 
     public void joinGame(View view) {
+        if(codeField.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Code cannot be empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         code = codeField.getText().toString();
 
         codeField.setEnabled(false);
@@ -136,7 +157,7 @@ public class Multiplayer extends AppCompatActivity {
                     turnText.setText("Opponent's Turn");
                 }
 
-                if(checkWin(view) == true) {
+                if(checkWin(view) == 1) {
                     bg_mp.stop();
                     effects_mp.stop();
                     bg_mp.reset();
@@ -148,6 +169,15 @@ public class Multiplayer extends AppCompatActivity {
                     } else {
                         turnText.setText("Opponent Wins!");
                     }
+                    disableGrid(view);
+                } else if (checkWin(view) == 2) {
+                    bg_mp.stop();
+                    effects_mp.stop();
+                    bg_mp.reset();
+                    bg_mp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
+                    bg_mp.start();
+                    v.vibrate(500);
+                    turnText.setText("Draw!");
                     disableGrid(view);
                 }
             }
@@ -215,7 +245,7 @@ public class Multiplayer extends AppCompatActivity {
         tempBoard.setCharAt(0, playerLetter);
         board = String.valueOf(tempBoard);
 
-        if(checkWin(view) == true) {
+        if(checkWin(view) == 1) {
             StringBuilder tBoard = new StringBuilder(board);
             tBoard.setCharAt(0, playerLetter);
             board = String.valueOf(tBoard);
@@ -246,8 +276,15 @@ public class Multiplayer extends AppCompatActivity {
     }
 
     public void reset(View view) {
-        board = zeroBoard;
-        mDatabase.child(code).setValue(zeroBoard);
+        Random random = new Random();
+        int x = random.nextInt(3);
+        String startingPlayer = "O";
+        if(x == 1) {
+            startingPlayer = "X";
+        }
+        board = startingPlayer + zeroBoard;
+        code = codeField.getText().toString();
+        mDatabase.child(code).setValue(board);
         if(board.charAt(0) != playerLetter) {
             enableGrid(view);
         } else {
@@ -255,7 +292,12 @@ public class Multiplayer extends AppCompatActivity {
         }
     }
 
-    public boolean checkWin(View view) {
+    public int checkWin(View view) {
+        // If draw
+        if( !board.contains(" ") && !board.contains("0") ) {
+            return 2;
+        }
+
          String[] winningSequences = {
                  "XXX......",
                  "...XXX...",
@@ -279,14 +321,14 @@ public class Multiplayer extends AppCompatActivity {
 
          for(int i = 0; i < winningSequences.length; i++) {
              if(tempBoard.matches(winningSequences[i])) {
-//                 StringBuilder tBoard = new StringBuilder(board);
-//                 tBoard.setCharAt(0, playerLetter);
-//                 board = String.valueOf(tBoard);
-//                 mDatabase.child(code).setValue(board);
-                 return true;
+                 return 1;
              }
          }
-         return false;
+         return 0;
+    }
+
+    public void back(View view) {
+        finish();
     }
 
 }
