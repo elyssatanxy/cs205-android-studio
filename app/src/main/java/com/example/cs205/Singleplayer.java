@@ -78,9 +78,8 @@ public class Singleplayer extends AppCompatActivity {
 
                     com_Move();
                     if (checkWin()){
-                        play_winner_sound();
+//                        reset function
                     }
-                    System.out.println(board);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -105,9 +104,8 @@ public class Singleplayer extends AppCompatActivity {
 
                     user_move();
                     if (checkWin()){
-                        play_winner_sound();
+//                        reset function
                     }
-                    System.out.println(board);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -281,7 +279,7 @@ public class Singleplayer extends AppCompatActivity {
     }
 
     public boolean checkWin() {
-        String[] winningSequences = {
+        String[] comWins = {
                 "XXX......",
                 "...XXX...",
                 "......XXX",
@@ -289,7 +287,10 @@ public class Singleplayer extends AppCompatActivity {
                 ".X..X..X.",
                 "..X..X..X",
                 "X...X...X",
-                "..X.X.X..",
+                "..X.X.X.."
+        };
+
+        String[] userWins = {
                 "OOO......",
                 "...OOO...",
                 "......OOO",
@@ -302,13 +303,21 @@ public class Singleplayer extends AppCompatActivity {
 
         String tempBoard = board;
 
-        for(int i = 0; i < winningSequences.length; i++) {
-            if(tempBoard.matches(winningSequences[i])) {
+        for(int i = 0; i < comWins.length; i++) {
+            if(tempBoard.matches(comWins[i])) {
 //                 StringBuilder tBoard = new StringBuilder(board);
 //                 tBoard.setCharAt(0, playerLetter);
 //                 board = String.valueOf(tBoard);
 //                 mDatabase.child(code).setValue(board);
-                System.out.println("winnerrrr");
+                play_loser_sound();
+                return true;
+            }
+            if(tempBoard.matches(userWins[i])) {
+//                 StringBuilder tBoard = new StringBuilder(board);
+//                 tBoard.setCharAt(0, playerLetter);
+//                 board = String.valueOf(tBoard);
+//                 mDatabase.child(code).setValue(board);
+                play_winner_sound();
                 return true;
             }
         }
@@ -320,6 +329,15 @@ public class Singleplayer extends AppCompatActivity {
         effects_mp.stop();
         bg_mp.reset();
         bg_mp = MediaPlayer.create(Singleplayer.this, R.raw.you_win);
+        bg_mp.start();
+        v.vibrate(500);
+    }
+
+    public void play_loser_sound(){
+        bg_mp.stop();
+        effects_mp.stop();
+        bg_mp.reset();
+        bg_mp = MediaPlayer.create(Singleplayer.this, R.raw.oh_no);
         bg_mp.start();
         v.vibrate(500);
     }
