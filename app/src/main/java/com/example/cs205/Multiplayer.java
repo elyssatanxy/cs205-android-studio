@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,10 +54,14 @@ public class Multiplayer extends AppCompatActivity {
 
     MediaPlayer effects_mp;
     Vibrator v;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         bg_mp = MediaPlayer.create(this, R.raw.game_music);
         effects_mp = MediaPlayer.create(this, R.raw.button_press);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

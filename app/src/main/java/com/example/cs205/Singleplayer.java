@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,29 +29,38 @@ public class Singleplayer extends AppCompatActivity {
     Button grid8;
     Button grid9;
     TextView text;
+
     private ReentrantLock lock = new ReentrantLock();
     Condition computerTurnDone = lock.newCondition();
     Condition userTurnDone = lock.newCondition();
+    private final Object availableGridsLock = new Object();
+    private final Object gameOverLock = new Object();
+    private final Object userTurnLock = new Object();
+
     volatile int index = 1;
     volatile ArrayList<Integer> availableGrids = new ArrayList<>();
     volatile String board = "000000000";
     AtomicInteger val = new AtomicInteger(10);
     volatile boolean gameOver = false;
-    private final Object availableGridsLock = new Object();
-    MediaPlayer bg_mp;
+    volatile boolean userTurn = false;
 
-    MediaPlayer effects_mp;
+    MediaPlayer bgMp;
+    MediaPlayer effectsMp;
     Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplayer);
-        bg_mp = MediaPlayer.create(this, R.raw.game_music);
-        effects_mp = MediaPlayer.create(this, R.raw.button_press);
+
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        bgMp = MediaPlayer.create(this, R.raw.game_music);
+        effectsMp = MediaPlayer.create(this, R.raw.button_press);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        bg_mp.setLooping(true);
-        bg_mp.start();
+        bgMp.setLooping(true);
+        bgMp.start();
 
         grid1 = findViewById(R.id.grid1);
         grid2 = findViewById(R.id.grid2);
@@ -76,8 +86,8 @@ public class Singleplayer extends AppCompatActivity {
                         userTurnDone.await();
                     }
 
-                    com_Move();
-                    if (checkWin()){
+                    computerMove();
+                    if (checkWin()) {
 //                        reset function
                     }
 
@@ -98,12 +108,13 @@ public class Singleplayer extends AppCompatActivity {
                     if (index % 2 == 1) {
                         computerTurnDone.await();
                     }
+
                     while (val.get() == 10) {
                         continue;
                     }
 
-                    user_move();
-                    if (checkWin()){
+                    userMove();
+                    if (checkWin()) {
 //                        reset function
                     }
 
@@ -119,26 +130,52 @@ public class Singleplayer extends AppCompatActivity {
         Runnable schedulerThread = new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 9; i++) {
-                    if (i % 2 == 0) {
-                        Thread ComputerThread = new Thread(computerThread);
-                        ComputerThread.start();
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Thread UserThread = new Thread(userThread);
-                        UserThread.start();
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                for (int i = 0; i < 10; i++) {
+                    synchronized (gameOverLock) {
+                        if (!gameOver) {
+                            if (!userTurn) {
+                                Thread ComputerThread = new Thread(computerThread);
+                                ComputerThread.start();
+
+                                try {
+                                    Thread.sleep(1500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                checkWin();
+
+                                synchronized (userTurnLock) {
+                                    userTurn = true;
+                                }
+                            } else {
+                                Thread UserThread = new Thread(userThread);
+                                UserThread.start();
+
+                                try {
+                                    Thread.sleep(3500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                checkWin();
+
+                                synchronized (userTurnLock) {
+                                    userTurn = false;
+                                }
+                            }
                         }
                     }
-
                 }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!gameOver) {
+                            text.setText("Game Over! Tie!");
+                        }
+                    }
+                });
             }
 
         };
@@ -172,13 +209,14 @@ public class Singleplayer extends AppCompatActivity {
         }
     }
 
-    public void com_Move(){
+    public void computerMove(){
         synchronized (availableGridsLock) {
             Log.i("COMPUTER THREAD", "ARRAY CURR" + availableGrids);
             if (!availableGrids.isEmpty()) {
                 Random random = new Random();
                 int nextIndex = random.nextInt(availableGrids.size());
                 int nextPosition = availableGrids.get(nextIndex);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -189,13 +227,13 @@ public class Singleplayer extends AppCompatActivity {
                         temp.setCharAt(nextPosition - 1, 'X');
                         board = String.valueOf(temp);
                     }
-
                 });
 
                 synchronized (availableGridsLock) {
                     Iterator<Integer> iterator = availableGrids.iterator();
                     while (iterator.hasNext()) {
                         int value = iterator.next();
+
                         if (value == nextPosition) {
                             iterator.remove();
                             break;
@@ -203,14 +241,14 @@ public class Singleplayer extends AppCompatActivity {
                     }
                 }
 
-
                 index++;
             }
         }
     }
 
-    public void user_move(){
-        effects_mp.start();
+    public void userMove(){
+        effectsMp.start();
+
         synchronized (availableGridsLock) {
             Log.i("USER", "this" + availableGrids);
             if (!availableGrids.isEmpty()) {
@@ -220,9 +258,11 @@ public class Singleplayer extends AppCompatActivity {
                     @Override
                     public void run() {
                         text.setText("Computer's Turn");
+
                         if (val.get() == 10) {
                             return;
                         }
+
                         Button grid = getGrid(val.get());
                         grid.setText("O");
                         StringBuilder temp = new StringBuilder(board);
@@ -303,42 +343,63 @@ public class Singleplayer extends AppCompatActivity {
 
         String tempBoard = board;
 
-        for(int i = 0; i < comWins.length; i++) {
-            if(tempBoard.matches(comWins[i])) {
-//                 StringBuilder tBoard = new StringBuilder(board);
-//                 tBoard.setCharAt(0, playerLetter);
-//                 board = String.valueOf(tBoard);
-//                 mDatabase.child(code).setValue(board);
-                play_loser_sound();
+        for (int i = 0; i < comWins.length; i++) {
+            if (tempBoard.matches(comWins[i])) {
+                playLoserSound();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        text.setText("Game Over! You Lose!");
+                    }
+                });
+
+                synchronized (gameOverLock) {
+                    gameOver = true;
+                }
+
                 return true;
             }
-            if(tempBoard.matches(userWins[i])) {
-//                 StringBuilder tBoard = new StringBuilder(board);
-//                 tBoard.setCharAt(0, playerLetter);
-//                 board = String.valueOf(tBoard);
-//                 mDatabase.child(code).setValue(board);
-                play_winner_sound();
+
+            if (tempBoard.matches(userWins[i])) {
+                playWinnerSound();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        text.setText("Game Over! You Win!");
+                    }
+                });
+
+                synchronized (gameOverLock) {
+                    gameOver = true;
+                }
+
                 return true;
             }
         }
         return false;
     }
 
-    public void play_winner_sound(){
-        bg_mp.stop();
-        effects_mp.stop();
-        bg_mp.reset();
-        bg_mp = MediaPlayer.create(Singleplayer.this, R.raw.you_win);
-        bg_mp.start();
+    public void playWinnerSound() {
+        bgMp.stop();
+        effectsMp.stop();
+        bgMp.reset();
+        bgMp = MediaPlayer.create(Singleplayer.this, R.raw.you_win);
+        bgMp.start();
         v.vibrate(500);
     }
 
-    public void play_loser_sound(){
-        bg_mp.stop();
-        effects_mp.stop();
-        bg_mp.reset();
-        bg_mp = MediaPlayer.create(Singleplayer.this, R.raw.oh_no);
-        bg_mp.start();
+    public void playLoserSound() {
+        bgMp.stop();
+        effectsMp.stop();
+        bgMp.reset();
+        bgMp = MediaPlayer.create(Singleplayer.this, R.raw.oh_no);
+        bgMp.start();
         v.vibrate(500);
+    }
+
+    public void reset(View view) {
+        this.recreate();
     }
 }
