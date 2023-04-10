@@ -400,6 +400,7 @@ public class Singleplayer extends AppCompatActivity {
     }
 
     public void reset(View view) {
+        bgMp.stop();
         this.recreate();
     }
 }

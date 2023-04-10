@@ -50,9 +50,9 @@ public class Multiplayer extends AppCompatActivity {
     Button grid9;
 
     Button[] gridArray;
-    MediaPlayer bg_mp;
+    MediaPlayer bgMp;
 
-    MediaPlayer effects_mp;
+    MediaPlayer effectsMp;
     Vibrator v;
 
     @Override
@@ -62,11 +62,11 @@ public class Multiplayer extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        bg_mp = MediaPlayer.create(this, R.raw.game_music);
-        effects_mp = MediaPlayer.create(this, R.raw.button_press);
+        bgMp = MediaPlayer.create(this, R.raw.game_music);
+        effectsMp = MediaPlayer.create(this, R.raw.button_press);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        bg_mp.setLooping(true);
-        bg_mp.start();
+        bgMp.setLooping(true);
+        bgMp.start();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         codeField = findViewById(R.id.codeField);
@@ -163,24 +163,27 @@ public class Multiplayer extends AppCompatActivity {
                 }
 
                 if(checkWin(view) == 1) {
-                    bg_mp.stop();
-                    effects_mp.stop();
-                    bg_mp.reset();
-                    bg_mp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
-                    bg_mp.start();
+                    bgMp.stop();
+                    effectsMp.stop();
+                    bgMp.reset();
                     v.vibrate(500);
+
                     if(board.charAt(0) == playerLetter) {
+                        bgMp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
+                        bgMp.start();
                         turnText.setText("You Win!");
                     } else {
+                        bgMp = MediaPlayer.create(Multiplayer.this, R.raw.oh_no);
+                        bgMp.start();
                         turnText.setText("Opponent Wins!");
                     }
                     disableGrid(view);
                 } else if (checkWin(view) == 2) {
-                    bg_mp.stop();
-                    effects_mp.stop();
-                    bg_mp.reset();
-                    bg_mp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
-                    bg_mp.start();
+                    bgMp.stop();
+                    effectsMp.stop();
+                    bgMp.reset();
+                    bgMp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
+                    bgMp.start();
                     v.vibrate(500);
                     turnText.setText("Draw!");
                     disableGrid(view);
@@ -207,7 +210,7 @@ public class Multiplayer extends AppCompatActivity {
 
     public void move (View view) {
         StringBuilder tempBoard = new StringBuilder(board);
-        effects_mp.start();
+        effectsMp.start();
         switch (view.getId()) {
             case R.id.grid1:
                 tempBoard.setCharAt(1, playerLetter);
@@ -333,6 +336,7 @@ public class Multiplayer extends AppCompatActivity {
     }
 
     public void back(View view) {
+        bgMp.stop();
         finish();
     }
 
