@@ -1,6 +1,8 @@
 package com.example.cs205;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,6 +14,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MediaPlayer bgMp = MediaPlayer.create(this, R.raw.game_start);
+        bgMp.start();
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
