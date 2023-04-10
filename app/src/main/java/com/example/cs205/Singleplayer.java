@@ -34,9 +34,6 @@ public class Singleplayer extends AppCompatActivity {
     Button grid9;
     TextView text;
 
-    private ReentrantLock lock = new ReentrantLock();
-    Condition computerTurnDone = lock.newCondition();
-    Condition userTurnDone = lock.newCondition();
     private final Object availableGridsLock = new Object();
     private final Object gameOverLock = new Object();
     private final Object userTurnLock = new Object();
@@ -85,23 +82,7 @@ public class Singleplayer extends AppCompatActivity {
         Runnable computerThread = new Runnable() {
             @Override
             public void run() {
-                lock.lock();
-                try {
-                    if (index % 2 == 0) {
-                        userTurnDone.await();
-                    }
-
-                    computerMove();
-                    if (checkWin()) {
-                        // reset function
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    computerTurnDone.signal();
-                    lock.unlock();
-                }
+                computerMove();
             }
         };
 
@@ -109,27 +90,11 @@ public class Singleplayer extends AppCompatActivity {
         Runnable userThread = new Runnable() {
             @Override
             public void run() {
-                lock.lock();
-                try {
-                    if (index % 2 == 1) {
-                        computerTurnDone.await();
-                    }
-
-                    while (val.get() == 10) {
-                        continue;
-                    }
-
-                    userMove();
-                    if (checkWin()) {
-                        // reset function
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    userTurnDone.signal();
-                    lock.unlock();
+                while (val.get() == 10) {
+                    continue;
                 }
+
+                userMove();
             }
         };
 
@@ -137,7 +102,7 @@ public class Singleplayer extends AppCompatActivity {
         Runnable schedulerThread = new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 9; i++) {
                     synchronized (gameOverLock) {
                         if (!gameOver) {
                             if (!userTurn) {
@@ -145,7 +110,7 @@ public class Singleplayer extends AppCompatActivity {
                                 ComputerThread.start();
 
                                 try {
-                                    while(index % 2 == 1){
+                                    while(index % 2 == 1) {
                                         Thread.sleep(500);
                                     }
                                 } catch (InterruptedException e) {
@@ -228,7 +193,7 @@ public class Singleplayer extends AppCompatActivity {
         }
     }
 
-    public void computerMove(){
+    public void computerMove() {
         synchronized (availableGridsLock) {
             Log.i("COMPUTER THREAD", "ARRAY CURR" + availableGrids);
             if (!availableGrids.isEmpty()) {
@@ -266,7 +231,39 @@ public class Singleplayer extends AppCompatActivity {
         }
     }
 
-    public void userMove(){
+    public void move(View v) {
+        switch (v.getId()) {
+            case R.id.grid1:
+                val.set(1);
+                break;
+            case R.id.grid2:
+                val.set(2);
+                break;
+            case R.id.grid3:
+                val.set(3);
+                break;
+            case R.id.grid4:
+                val.set(4);
+                break;
+            case R.id.grid5:
+                val.set(5);
+                break;
+            case R.id.grid6:
+                val.set(6);
+                break;
+            case R.id.grid7:
+                val.set(7);
+                break;
+            case R.id.grid8:
+                val.set(8);
+                break;
+            case R.id.grid9:
+                val.set(9);
+                break;
+        }
+    }
+
+    public void userMove() {
         effectsMp.start();
 
         synchronized (availableGridsLock) {
@@ -306,37 +303,6 @@ public class Singleplayer extends AppCompatActivity {
         }
     }
 
-    public void move(View v) {
-        switch (v.getId()) {
-            case R.id.grid1:
-                val.set(1);
-                break;
-            case R.id.grid2:
-                val.set(2);
-                break;
-            case R.id.grid3:
-                val.set(3);
-                break;
-            case R.id.grid4:
-                val.set(4);
-                break;
-            case R.id.grid5:
-                val.set(5);
-                break;
-            case R.id.grid6:
-                val.set(6);
-                break;
-            case R.id.grid7:
-                val.set(7);
-                break;
-            case R.id.grid8:
-                val.set(8);
-                break;
-            case R.id.grid9:
-                val.set(9);
-                break;
-        }
-    }
 
     public boolean checkWin() {
         String[] comWins = {
