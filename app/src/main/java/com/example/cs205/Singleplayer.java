@@ -33,7 +33,6 @@ public class Singleplayer extends AppCompatActivity {
     Button grid8;
     Button grid9;
     TextView text;
-    Dialog myDialog;
 
     private ReentrantLock lock = new ReentrantLock();
     Condition computerTurnDone = lock.newCondition();
@@ -82,6 +81,7 @@ public class Singleplayer extends AppCompatActivity {
             availableGrids.add(i);
         }
 
+        // computer thread runnable
         Runnable computerThread = new Runnable() {
             @Override
             public void run() {
@@ -93,7 +93,7 @@ public class Singleplayer extends AppCompatActivity {
 
                     computerMove();
                     if (checkWin()) {
-//                        reset function
+                        // reset function
                     }
 
                 } catch (InterruptedException e) {
@@ -105,6 +105,7 @@ public class Singleplayer extends AppCompatActivity {
             }
         };
 
+        // user thread runnable
         Runnable userThread = new Runnable() {
             @Override
             public void run() {
@@ -120,7 +121,7 @@ public class Singleplayer extends AppCompatActivity {
 
                     userMove();
                     if (checkWin()) {
-//                        reset function
+                        // reset function
                     }
 
                 } catch (InterruptedException e) {
@@ -132,6 +133,7 @@ public class Singleplayer extends AppCompatActivity {
             }
         };
 
+        // scheduler thread runnable
         Runnable schedulerThread = new Runnable() {
             @Override
             public void run() {
@@ -430,6 +432,11 @@ public class Singleplayer extends AppCompatActivity {
     public void reset(View view) {
         bgMp.stop();
         this.recreate();
+    }
+
+    public void back(View view) {
+        bgMp.stop();
+        finish();
     }
 
     @Override

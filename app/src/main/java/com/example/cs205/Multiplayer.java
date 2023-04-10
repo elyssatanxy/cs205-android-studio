@@ -363,6 +363,7 @@ public class Multiplayer extends AppCompatActivity {
         bgMp.stop();
         finish();
     }
+
     @Override
     public void finish() {
         super.finish();
