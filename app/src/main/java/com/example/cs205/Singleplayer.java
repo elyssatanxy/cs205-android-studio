@@ -143,7 +143,9 @@ public class Singleplayer extends AppCompatActivity {
                                 ComputerThread.start();
 
                                 try {
-                                    Thread.sleep(1500);
+                                    while(index % 2 == 1){
+                                        Thread.sleep(500);
+                                    }
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -158,8 +160,9 @@ public class Singleplayer extends AppCompatActivity {
                                 UserThread.start();
 
                                 try {
-                                    // Thread.sleep(3500);
-                                    Thread.sleep(1500);
+                                    while(index % 2 == 0){
+                                        Thread.sleep(500);
+                                    }
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -235,6 +238,7 @@ public class Singleplayer extends AppCompatActivity {
                         text.setText("Your Turn");
                         Button grid = getGrid(nextPosition);
                         grid.setText("X");
+                        grid.setEnabled(false);
                         StringBuilder temp = new StringBuilder(board);
                         temp.setCharAt(nextPosition - 1, 'X');
                         board = String.valueOf(temp);
