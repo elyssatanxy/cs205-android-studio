@@ -172,10 +172,22 @@ public class Multiplayer extends AppCompatActivity {
                         bgMp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
                         bgMp.start();
                         turnText.setText("You Win!");
+
+                        Context context = getApplicationContext();
+                        CharSequence text = "Game Over! You Win!";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     } else {
                         bgMp = MediaPlayer.create(Multiplayer.this, R.raw.oh_no);
                         bgMp.start();
                         turnText.setText("Opponent Wins!");
+
+                        Context context = getApplicationContext();
+                        CharSequence text = "Game Over! You Lose!";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
                     disableGrid(view);
                 } else if (checkWin(view) == 2) {
@@ -185,8 +197,14 @@ public class Multiplayer extends AppCompatActivity {
                     bgMp = MediaPlayer.create(Multiplayer.this, R.raw.you_win);
                     bgMp.start();
                     v.vibrate(500);
-                    turnText.setText("Draw!");
+                    turnText.setText("Tie!");
                     disableGrid(view);
+
+                    Context context = getApplicationContext();
+                    CharSequence text = "Game Over! Tie!";
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
                 }
             }
 

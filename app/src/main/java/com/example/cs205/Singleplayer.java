@@ -1,14 +1,18 @@
 package com.example.cs205;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -29,6 +33,7 @@ public class Singleplayer extends AppCompatActivity {
     Button grid8;
     Button grid9;
     TextView text;
+    Dialog myDialog;
 
     private ReentrantLock lock = new ReentrantLock();
     Condition computerTurnDone = lock.newCondition();
@@ -174,6 +179,12 @@ public class Singleplayer extends AppCompatActivity {
                     public void run() {
                         if (!gameOver) {
                             text.setText("Game Over! Tie!");
+
+                            Context context = getApplicationContext();
+                            CharSequence text = "Game Over! Tie!";
+                            int duration = Toast.LENGTH_LONG;
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
                         }
                     }
                 });
@@ -352,6 +363,12 @@ public class Singleplayer extends AppCompatActivity {
                     @Override
                     public void run() {
                         text.setText("Game Over! You Lose!");
+
+                        Context context = getApplicationContext();
+                        CharSequence text = "Game Over! You Lose!";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
                 });
 
@@ -369,6 +386,12 @@ public class Singleplayer extends AppCompatActivity {
                     @Override
                     public void run() {
                         text.setText("Game Over! You Win!");
+
+                        Context context = getApplicationContext();
+                        CharSequence text = "Game Over! You Win!";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
                 });
 
