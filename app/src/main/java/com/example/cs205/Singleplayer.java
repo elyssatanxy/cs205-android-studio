@@ -153,7 +153,8 @@ public class Singleplayer extends AppCompatActivity {
                                 UserThread.start();
 
                                 try {
-                                    Thread.sleep(3500);
+                                    // Thread.sleep(3500);
+                                    Thread.sleep(1500);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -402,5 +403,11 @@ public class Singleplayer extends AppCompatActivity {
     public void reset(View view) {
         bgMp.stop();
         this.recreate();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        bgMp.stop();
     }
 }
