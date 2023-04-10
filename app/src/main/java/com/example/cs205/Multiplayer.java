@@ -284,6 +284,12 @@ public class Multiplayer extends AppCompatActivity {
     }
 
     public void reset(View view) {
+        if(!bgMp.isPlaying()){
+            bgMp.reset();
+            bgMp = MediaPlayer.create(this, R.raw.game_music);
+            bgMp.setLooping(true);
+            bgMp.start();
+        }
         Random random = new Random();
         int x = random.nextInt(3);
         String startingPlayer = "O";
